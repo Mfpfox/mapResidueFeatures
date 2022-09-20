@@ -4,9 +4,9 @@ Project has two main parts:
 1. downloadUniprotDomains.py
 2. isposition_atSite_inDomain.py
 
-## [1] The **downloadUniprotDomains.py** script outputs a folder "Uniprot_Domains" with a subfolder named after the date. Output files are added to the subfolder.
-
-UniProt annotations are filtered for human proteome reviewed enteries. For more downloadable annotation column options see <https://www.uniprot.org/help/uniprotkb_column_names>. To search a query string using a web browser, remove 'format', 'compress', and 'force'.
+## [1] downloadUniprotDomains.py
+* script outputs a folder "Uniprot_Domains" with a subfolder named after the date, all output files are added to this subfolder.
+* UniProt annotations are filtered for human proteome reviewed enteries. For more downloadable annotation column options see <https://www.uniprot.org/help/uniprotkb_column_names>. To search a query string using a web browser, remove 'format', 'compress', and 'force'.
 
 ```bash
 python downloadUniprotDomains.py  # To run script
@@ -61,17 +61,21 @@ CONVERTING URL to string that works with script:
 
 
 
-##  [2] The isposition_atSite_inDomain.py script
+##  [2] isposition_atSite_inDomain.py
+
+### Functions:
+```python
+addSiteAnnotations(infile, head, outfile, siteCol, window)
+addRegionAnnotations(infile, head, outfile, siteCol, window)
+ispositionAtSiteInDomain()
+```
+
+
 ```
 --------------updated 7/21/22--------------
 cleaned comments updated descriptions,
 added () to proximal boundary if statements in both functions,
 added low_memory=False to import of position level reference
-
-### Functions:
-addSiteAnnotations(infile, head, outfile, siteCol, window)
-addRegionAnnotations(infile, head, outfile, siteCol, window)
-ispositionAtSiteInDomain()
 
 ------------------input files------------------
 features_summary_QCd_IdenticalSeq_18231proteins.csv
