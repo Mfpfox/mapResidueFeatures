@@ -1,34 +1,3 @@
-"""
-feb.12 2022
-
-Output files saved in created folder. Folder named "Uniprot_Domains" and subfolder is named after date of running script.
-
-This code currently filters for human proteome reviewed enteries.
-downloadable annotation column options, <https://www.uniprot.org/help/uniprotkb_column_names>. remove 'format', 'compress', and 'force' to search browser using download_link string.
-
-$ python downloadUniprotDomains.py
-
---Functions in script--
-def queryUKB(SAVEFULL, SAVESUMMARY, FOLDERNAME)
-    def parseRegion(row, splitKey)
-    def parseSite(row, splitKey)
-def compareUKBsequences(SAVESUMMARY, REFSEQ, QCoutput)
-
-args for queryUKB:
-1. full feature save filename contains unparsed data from uniprot api (full_human_features.txt) 
-2. summary of feature positions filename contains parsed data and same line count as full feature download (features_summary.txt)
-3. folder name for output file dir/ (Uniprot_Domains)
-
-args for sequence comparison between queried data vs reference for cpdaa positions QC:
-1. CCDSfromfasta_REFERENCE.csv
-2. features_summary_QCd_sequences.csv
-
-line count of saved output files from 2/12/2022 run:
-    20376 features_summary.txt
-    20376 full_human_features.txt
-    18417 features_summary_QCd_sequences.csv 
-"""
-
 from requests import get
 from time import strftime
 from os import path, makedirs
@@ -45,16 +14,16 @@ from all_funx import *
 # FULLFILE = args.queryresults
 # SUMFILE = args.summaryresults
 # cpdaa = args.cpdaa
-# # add foldername arg
 
 FULLFILE = "full_human_features.txt" # ukb api dump
 SUMFILE = "features_summary.txt" # parsed and formatted version of dump
-FOLDERNAME = "Uniprot_Domains"
-referenceseq = "/Users/mariapalafox/Desktop/BRIDGE/DISORDER/ChemoproteomicData/CCDSfromfasta_REFERENCE.csv" # sequences that cpdaa and missense positions are based on
-qcout = "features_summary_QCd_sequences.csv"
 cpdaa = "/Users/mariapalafox/Desktop/BRIDGE/DISORDER/ChemoproteomicData/REF_posID_level_18827cpdaa_4535UKBIDs.csv" # cpdaa positions
 
+referenceseq = "/Users/mariapalafox/Desktop/BRIDGE/DISORDER/ChemoproteomicData/CCDSfromfasta_REFERENCE.csv" # sequences that cpdaa and missense positions are based on
+qcout = "features_summary_QCd_sequences.csv"
+
 # get directory and set, returns the directory component of os.path
+FOLDERNAME = "Uniprot_Domains"
 folder = path.dirname(path.abspath(__file__))
 marktime = strftime("%Y%m%d") # subfolder name= today's date
 output_folder = folder + "/" + FOLDERNAME + "/" + marktime + "/"
@@ -102,25 +71,6 @@ def parseRegion(row, splitKey):
                 coords2.append(item)
     ranges = [x + "-" + y for x, y in coords2]
     return(ranges)
-
-"""
-2021_04 version of ukb was downloaded on feb. 6 using browser share button link copy and edit for this script.
-
-----Only enteries w/ 3d structure, n=7,376------
-https://www.uniprot.org/uniprot/?query=reviewed%3Ayes%20organism%3A%22Homo%20sapiens%20(Human)%20%5B9606%5D%22%20proteome%3Aup000005640%20keyword%3A%223D-structure%20%5BKW-0002%5D%22&columns=
-------All reviewed human proteome enteries, n=20,360------------
-https://www.uniprot.org/uniprot/?query=&fil=proteome%3AUP000005640%20AND%20reviewed%3Ayes%20AND%20organism%3A%22Homo%20sapiens%20(Human)%20%5B9606%5D%22&columns=
-------------------------------------------------------------------------------
-download link failed w/ line..
-"&fil=reviewed:yes%20organism:%22Homo%20sapiens%20(Human)%20[9606]%22" \
-
-CONVERTING URL to string that works with script:
-    %3A is :
-    %5B is [
-    %5D is ]
-    %2C is ,
-    %22 is "
-"""
 
 def queryUKB(SAVEFULL, SAVESUMMARY, FOLDERNAME):
     # online query to ukb api
@@ -273,6 +223,7 @@ def queryUKB(SAVEFULL, SAVESUMMARY, FOLDERNAME):
                         bind_coords2.append(item)
                 else:
                     continue
+               
             #-----special case 2: disulfide bond----------
             bond_coords2 = []
             bonds = bonds.replace(" DISULFID ", "")
@@ -295,6 +246,7 @@ def queryUKB(SAVEFULL, SAVESUMMARY, FOLDERNAME):
                             v.append(item)
                             bond_coords2.append(v)
             bridges = [x + ".." + y for x, y in bond_coords2]
+            
             #-----special case 3: region-disordered--------------
             region = region.split("REGION ")
             disorder_coords=[]
@@ -318,7 +270,7 @@ def queryUKB(SAVEFULL, SAVESUMMARY, FOLDERNAME):
                 else:
                     continue
             disorder_ranges = [x + "-" + y for x, y in disorder_coords2]
-            #----------------------------------------------------
+           
             # write final parsed line to output
             output.write(entry + "\t" + protein_names + "\t" + \
                 gene_names + "\t" + length + "\t" + sequence + "\t" + \
