@@ -17,9 +17,8 @@ from all_funx import *
 
 FULLFILE = "full_human_features.txt" # ukb api dump
 SUMFILE = "features_summary.txt" # parsed and formatted version of dump
-cpdaa = "/Users/mariapalafox/Desktop/BRIDGE/DISORDER/ChemoproteomicData/REF_posID_level_18827cpdaa_4535UKBIDs.csv" # cpdaa positions
-
-referenceseq = "/Users/mariapalafox/Desktop/BRIDGE/DISORDER/ChemoproteomicData/CCDSfromfasta_REFERENCE.csv" # sequences that cpdaa and missense positions are based on
+cpdaa = "QC/REF_posID_level_18827cpdaa_4535UKBIDs.csv" # cpdaa positions
+referenceseq = "QC/CCDSfromfasta_REFERENCE.csv" # sequences that cpdaa and missense positions are based on
 qcout = "features_summary_QCd_sequences.csv"
 
 # get directory and set, returns the directory component of os.path
