@@ -1,3 +1,21 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# redundancy  for function testing
+
         active = active.split("ACT_SITE ")
         active_coords=[]
         for item in active:

@@ -5,6 +5,31 @@ from csv import reader
 import argparse
 from all_funx import *
 
+'''
+Run log:
+2.12.22 line count of saved output files from run:
+    20376 features_summary.txt
+    20376 full_human_features.txt
+    18417 features_summary_QCd_sequences.csv 
+notes from query link:
+    2021_04 version of ukb was downloaded on feb. 6 using browser share button link copy and edit for this script.
+----Only enteries w/ 3d structure, n=7,376------
+https://www.uniprot.org/uniprot/?query=reviewed%3Ayes%20organism%3A%22Homo%20sapiens%20(Human)%20%5B9606%5D%22%20proteome%3Aup000005640%20keyword%3A%223D-structure%20%5BKW-0002%5D%22&columns=
+------All reviewed human proteome enteries, n=20,360------------
+https://www.uniprot.org/uniprot/?query=&fil=proteome%3AUP000005640%20AND%20reviewed%3Ayes%20AND%20organism%3A%22Homo%20sapiens%20(Human)%20%5B9606%5D%22&columns=
+------------------------------------------------------------------------------
+download link failed w/ line..
+"&fil=reviewed:yes%20organism:%22Homo%20sapiens%20(Human)%20[9606]%22" \
+
+CONVERTING URL to string that works with script:
+    %3A is :
+    %5B is [
+    %5D is ]
+    %2C is ,
+    %22 is "
+
+'''
+
 # arguments added here
 # parser = argparse.ArgumentParser(description=" ")
 # parser.add_argument("queryresults", help=" ")
