@@ -1,0 +1,26 @@
+.DS_Store
+*__pycache__*
+.ipynb_checkpoints/
+*.pyc
+*.png
+*.fasta
+*.gz
+*.jpg
+*.html
+.idea
+# data
+*.csv
+*.tsv
+*.txt
+*.xml
+# microsoft
+*.docx
+*.pptx
+*.xlsx
+# local folders entire contents
+UniProt_TopologicalDomain_extracellularCys/*
+UniProt_TopologicalDomain_extracellularCys
+SubcellularBrowserFASTAdownloads/*
+SubcellularBrowserFASTAdownloads
+oddssEvenDisulfide_collab/*
+oddssEvenDisulfide_collab
