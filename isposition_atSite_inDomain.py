@@ -6,39 +6,6 @@ import os
 sys.path.append("/Users/mariapalafox/Desktop/TOOLBOXPY")
 from all_funx import *
 
-"""
---------------updated 7/21/22--------------
-cleaned comments updated descriptions,
-added () to proximal boundary if statements in both functions,
-added low_memory=False to import of position level reference
-
-------------------functions------------------
-addSiteAnnotations(infile, head, outfile, siteCol, window)
-addRegionAnnotations(infile, head, outfile, siteCol, window)
-ispositionAtSiteInDomain()
-
-------------------input files------------------
-features_summary_QCd_IdenticalSeq_18231proteins.csv
-    functions use input file because it only includes annotations for proteins with identical sequence between reference of project and 2/12/2022 uniprotDomainDownload
-    * made in isposition_atSite.ipynb
-
-REF_posID_level_18827cpdaa_4535UKBIDs.csv
-    (all CpDAA positions)
-
-codonMaxMeanScored_mergedDescribeProt_1231_MendelCpD.csv v1 run
-    ($$$ all aa positions in mendelCpD)
-
-codonMaxMeanScored_mergedDescribeProt_3853_Mendelian v1 run
-
---------------output files------------------
-[input name]_SITES_ANNOTATED_window_[windowSize].csv
-
-[input name]_REGIONS_ANNOTATED_window_[windowSize].csv
-
-    ** Notes on output: each run produces two unneeded files that have extension "SITESmerged.csv" or "REGIONSmerged.csv" , deleting these output files
-
-"""
-
 def addSiteAnnotations(infile, head, outfile, siteCol, window):
     f = open(infile)
     df = list(csv.reader(f))
@@ -216,15 +183,10 @@ def ispositionAtSiteInDomain():
     """
     # import QC ukb annotations ref (made in isposition_atSite_inDomain.ipynb)
     # only includes annotations for proteins with identical sequence
-    UKBINFILE = "features_summary_QCd_IdenticalSeq_18231proteins.csv"
-
+    UKBINFILE = "QC/features_summary_QCd_IdenticalSeq_18231proteins.csv"
     # import posID level ref to merge with annotations
-    dirr = "/Users/mariapalafox/Desktop/BRIDGE/disorder/dbNSFPmapping/MAXMEAN_SCORING/"
-    # dir for REF 18k: "/Users/mariapalafox/Desktop/BRIDGE/DISORDER/ChemoproteomicData/"
-
-    POSINFILE = "codonMaxMeanScored_mergedDescribeProt_3853_Mendelian.csv"
-    # POSINFILE = "codonMaxMeanScored_mergedDescribeProt_1231_MendelCpD.csv"
-    # POSINFILE = "REF_posID_level_18827cpdaa_4535UKBIDs.csv"
+    #POSINFILE = "codonMaxMeanScored_mergedDescribeProt_3853_Mendelian.csv"
+    POSINFILE = "QC/REF_posID_level_18827cpdaa_4535UKBIDs.csv"
 
      # '.csv' must be included
     saveSite = POSINFILE.replace(".csv", "_SITESmerged.csv")
@@ -239,7 +201,7 @@ def ispositionAtSiteInDomain():
     IDname = "UKBID"
     posIDname = "posID"
     #----------------------------------------
-    positions = pd.read_csv(dirr + POSINFILE, low_memory=False)
+    positions = pd.read_csv(POSINFILE, low_memory=False)
     ukb = pd.read_csv(UKBINFILE)
     print("position level reference head:")
     print(positions.head())
@@ -264,14 +226,12 @@ def ispositionAtSiteInDomain():
     print()
     # make header cols for merged df's specific to site and region annos.:
     basicHead = [posIDname, 'pos']
-
     # sites
     sitesCol= ['SubstrateBindingSite', 'ActiveSite', 'MetalBindSite',
            'ModifiedResidue', 'Lipidation', 'Glycosylation', 'Mutagenesis',
            'DisulfideBond'] 
     sitesDF = merged1[basicHead + sitesCol].copy()
     sitesDF.to_csv(saveSite, index=False) # save site and region df's
-
     sitesAddCol = [] # make exact and proximal header additions SITES
     for coli in sitesCol:
         exx = coli + '_Exact'
@@ -286,7 +246,6 @@ def ispositionAtSiteInDomain():
             'Turn']
     regionDF = merged1[basicHead + regionCol].copy()
     regionDF.to_csv(saveRegion, index=False) # save site and region df's
-
     regAddCol = [] # make exact and proximal header additions REGIONS
     for coli in regionCol:
         exx = coli + '_Exact'
@@ -294,7 +253,6 @@ def ispositionAtSiteInDomain():
         regAddCol.append(coli)
         regAddCol.append(exx)
         regAddCol.append(prx)
-
     # new headers
     newheaderSites = basicHead + sitesAddCol
     newheaderRegion = basicHead + regAddCol

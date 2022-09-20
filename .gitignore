@@ -1,3 +1,4 @@
+*.zip
 .DS_Store
 *__pycache__*
 .ipynb_checkpoints/
@@ -8,14 +9,15 @@
 *.jpg
 *.html
 .idea
-# data
 *.tsv
-
 *.xml
-# microsoft
 *.docx
 *.pptx
 *.xlsx
+
+uniprot-organism9606_AND_pdb_7600proteins.txt
+uniprot-reviewed+Homo+sapiens+hasStructure_7376proteins.txt
+
 # local folders entire contents
 UniProt_TopologicalDomain_extracellularCys/*
 UniProt_TopologicalDomain_extracellularCys
