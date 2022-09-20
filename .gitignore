@@ -9,9 +9,8 @@
 *.html
 .idea
 # data
-*.csv
 *.tsv
-*.txt
+
 *.xml
 # microsoft
 *.docx
