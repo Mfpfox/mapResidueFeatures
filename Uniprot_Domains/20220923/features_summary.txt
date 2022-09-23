@@ -1,0 +1,1 @@
+UKBID	Protein	Gene	Length	Sequence	SubunitStructure	3D	PDB	InteractsWith	PTM	SubstrateBindingSite	ActiveSite	MetalBindSite	ModifiedResidue	Lipidation	Glycosylation	Mutagenesis	NucleotideBindRegion	DNAbindRegion	ZincFinger	Motif	DisorderedRegion	Domain	DisulfideBond	BetaStrand	Helix	Turn

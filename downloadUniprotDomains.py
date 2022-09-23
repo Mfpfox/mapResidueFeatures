@@ -3,9 +3,30 @@ from time import strftime
 from os import path, makedirs
 from csv import reader
 import argparse
-from all_funx import *
+
+def addcolumnconditionalDropFalse(mapList, df, dfcol):
+    # returns df after dropping rows not found in mapList
+    # only keep True rows
+    print("dropping rows False for containing value in mapList...")
+    df2=df[df[dfcol].isin(mapList)]
+    df2.reset_index(inplace=True, drop=True)
+    print("filtered out False rows df shape: ", df2.shape)
+    return df2
+
+
+def checkColumnValue(df, col):
+    #print(df[col].value_counts().reset_index().rename(columns={'index':col, col:'Count'}))
+    df2= df[col].value_counts().reset_index().rename(columns={'index':col, col:'Count'})
+    print()
+    print('---')
+    print(df2)
+
 
 '''
+url construction:
+https://www.uniprot.org/help/api_queries
+
+
 Run log:
 2.12.22 line count of saved output files from run:
     20376 features_summary.txt
@@ -30,20 +51,17 @@ CONVERTING URL to string that works with script:
 
 '''
 
-# arguments added here
-# parser = argparse.ArgumentParser(description=" ")
-# parser.add_argument("queryresults", help=" ")
-# parser.add_argument("summaryresults", help=" ")
-# parser.add_argument("cpdaa", help="Residue-level chemoproteomic .csv filename")
+# parser = argparse.ArgumentParser(description="downloadUniprotDomains.py first downloads a version of uniprotkb\
+#     annotations for residues in the human reference proteome-reviewed status. Then using a user input file,\
+#     compares the positions of residues in the input file to the downloaded reference of annottions.")
+# parser.add_argument("posInput", help="Residue-level chemoproteomic .csv filename")
 # args = parser.parse_args()
-# FULLFILE = args.queryresults
-# SUMFILE = args.summaryresults
-# cpdaa = args.cpdaa
+# CpDAA = args.posInput   
+#CpDAA = "QC/REF_posID_level_18827cpdaa_4535UKBIDs.csv" # cpdaa positions
 
 FULLFILE = "full_human_features.txt" # ukb api dump
 SUMFILE = "features_summary.txt" # parsed and formatted version of dump
-cpdaa = "QC/REF_posID_level_18827cpdaa_4535UKBIDs.csv" # cpdaa positions
-referenceseq = "QC/CCDSfromfasta_REFERENCE.csv" # sequences that cpdaa and missense positions are based on
+REFSEQ = "QC/CCDSfromfasta_REFERENCE.csv" # sequences that cpdaa and missense positions are based on
 qcout = "features_summary_QCd_sequences.csv"
 
 # get directory and set, returns the directory component of os.path
@@ -51,6 +69,7 @@ FOLDERNAME = "Uniprot_Domains"
 folder = path.dirname(path.abspath(__file__))
 marktime = strftime("%Y%m%d") # subfolder name= today's date
 output_folder = folder + "/" + FOLDERNAME + "/" + marktime + "/"
+
 if not path.exists(output_folder):
     makedirs(output_folder) # updates directories, if directory name doesnt exist, creates dir
 
@@ -59,9 +78,10 @@ SAVEFULL = output_folder + FULLFILE
 SAVESUMMARY = output_folder + SUMFILE
 
 # INPUTS to Sequence QC
-REFSEQ = folder + "/" + referenceseq
-CpDAA = folder + "/" + cpdaa
+#REFSEQ = folder + "/" + referenceseq
+#CpDAA = folder + "/" + cpdaa
 QCoutput = output_folder + "/" + qcout
+
 
 def parseSite(row, splitKey):
     # called by queryUKB, for every protein row returns pos of single sites ex. P12335 1; 3; 6; 7
@@ -98,12 +118,10 @@ def parseRegion(row, splitKey):
 
 def queryUKB(SAVEFULL, SAVESUMMARY, FOLDERNAME):
     # online query to ukb api
-    download_link = "https://www.uniprot.org/uniprot" \
+    download_link = "https://rest.uniprot.org/uniprot" \
             "?query=reviewed:yes" \
             "&fil=organism:%22Homo%20sapiens%20(Human)%20[9606]%22" \
             "&format=tab" \
-            "&compress=no" \
-            "&force=yes" \
             "&columns=id," \
             "entry%20name," \
             "protein%20names," \
@@ -133,7 +151,7 @@ def queryUKB(SAVEFULL, SAVESUMMARY, FOLDERNAME):
             "feature(HELIX)," \
             "feature(TURN)" \
            "&sort=score"
-    
+
     # saving full ukb query results
     download_database = get(download_link).text
     with open(SAVEFULL, "w") as f:
@@ -172,9 +190,11 @@ def queryUKB(SAVEFULL, SAVESUMMARY, FOLDERNAME):
             "BetaStrand" + "\t" + \
             "Helix" + "\t" + \
             "Turn" + "\n")
-        
+
         # save row values as variables to functions to use
         for line in qdata_csv:
+            print('line:')
+            print(line)
             entry = line[0]             #output.write
             protein_names = line[2]      #output.write
             gene_names = line[3]        #output.write
@@ -404,10 +424,18 @@ def compareUKBsequences(summaryFile, refFile, qcname):
     # position diff based on shorter seq
     #dfsummary.loc[:, 'position.difference'] = posdiffcol
     dfsummary.loc[:, 'QC.posID.difference'] = diffposID
-    print()
-    checkColumnValues(dfsummary, "identicalToRefSequence")
+    checkColumnValue(dfsummary, "identicalToRefSequence")
     dfsummary.to_csv(qcname, index=False)
 
+
+
+
 if __name__ == '__main__':
+
+
     queryUKB(SAVEFULL, SAVESUMMARY, FOLDERNAME)
+
     compareUKBsequences(SAVESUMMARY, REFSEQ, QCoutput)
+
+
+
